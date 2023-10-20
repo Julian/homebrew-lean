@@ -1,6 +1,8 @@
 class Lean < Formula
   desc "Theorem Prover"
   homepage "https://leanprover.github.io/"
+  url "https://github.com/leanprover/lean4/archive/refs/tags/v4.2.0-rc3.tar.gz"
+  sha256 "c51b416c9f8114a16a73cd88969aaeff2163c51bd3f4a11345d36e415418b24e"
   license "Apache-2.0"
   head "https://github.com/leanprover/lean4.git"
 
@@ -10,8 +12,7 @@ class Lean < Formula
   depends_on "jemalloc"
   depends_on macos: :mojave
 
-  conflicts_with "elan-init", because: "it installs the same binaries"
-  conflicts_with "lean", because: "is installs the same binaries"
+  conflicts_with "elan-init", because: "`lean` and `elan-init` install the same binaries"
 
   def install
     mkdir "build/release" do
