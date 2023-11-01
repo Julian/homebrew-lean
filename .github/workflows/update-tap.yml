@@ -1,0 +1,39 @@
+name: Autoupdate
+
+on:
+  schedule:
+    - cron: "1 11 * * *"
+  workflow_dispatch:
+
+jobs:
+  update-tap:
+    runs-on: macos-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: octokit/request-action@v2.x
+        id: mathlib4_lean_version
+        with:
+          route: GET /repos/leanprover-community/Mathlib4/contents/lean-toolchain
+          mediaType: |
+            format: raw
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Parse the version
+        run: |
+          echo MATHLIB4_LEAN_VERSION=$(printf '${{ steps.mathlib4_lean_version.outputs.data }}' | cut -d':' -f2) >>$GITHUB_ENV
+      - name: Update the Lean formula
+        run: |
+          brew tap julian/lean
+          brew bump-formula-pr --no-audit --write-only julian/lean/lean --url "https://github.com/leanprover/lean4/archive/refs/tags/${MATHLIB4_LEAN_VERSION}.tar.gz"
+        # brew bump-formula-pr appears to have no way to use cwd,
+        # and pushing from the tap repo appears not to work, hooray...
+      - uses: actions/checkout@v4
+      - name: Copy over changes...
+        run: cp -r /usr/local/Homebrew/Library/Taps/julian/homebrew-lean/Formula/lean.rb ./Formula/
+      - name: Commit the changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update to the new Mathlib4 Lean version
