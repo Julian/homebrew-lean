@@ -13,6 +13,11 @@ jobs:
       contents: write
 
     steps:
+      - run: brew tap julian/lean
+      - name: Get the existing Lean formula version
+        id: existing
+        run: |
+          printf 'version=v%s\n' "$(brew info --json julian/lean/lean | jq -r '.[0].versions.stable')" >>"$GITHUB_OUTPUT"
       - uses: octokit/request-action@v2.x
         id: mathlib4_lean_version
         with:
@@ -26,14 +31,16 @@ jobs:
           echo MATHLIB4_LEAN_VERSION=$(printf '${{ steps.mathlib4_lean_version.outputs.data }}' | cut -d':' -f2) >>$GITHUB_ENV
       - name: Update the Lean formula
         run: |
-          brew tap julian/lean
           brew bump-formula-pr --no-audit --write-only julian/lean/lean --url "https://github.com/leanprover/lean4/archive/refs/tags/${MATHLIB4_LEAN_VERSION}.tar.gz"
+        if: ${{ env.MATHLIB4_LEAN_VERSION != steps.existing.outputs.version }}
         # brew bump-formula-pr appears to have no way to use cwd,
         # and pushing from the tap repo appears not to work, hooray...
       - uses: actions/checkout@v4
       - name: Copy over changes...
         run: cp -r /usr/local/Homebrew/Library/Taps/julian/homebrew-lean/Formula/lean.rb ./Formula/
+        if: ${{ env.MATHLIB4_LEAN_VERSION != steps.existing.outputs.version }}
       - name: Commit the changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update to the new Mathlib4 Lean version
+        if: ${{ env.MATHLIB4_LEAN_VERSION != steps.existing.outputs.version }}
