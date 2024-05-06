@@ -37,7 +37,7 @@ jobs:
         # and pushing from the tap repo appears not to work, hooray...
       - uses: actions/checkout@v4
       - name: Copy over changes...
-        run: cp -r /usr/local/Homebrew/Library/Taps/julian/homebrew-lean/Formula/lean.rb ./Formula/
+        run: cp -r $(brew --prefix)/Library/Taps/julian/homebrew-lean/Formula/lean.rb ./Formula/
         if: ${{ env.MATHLIB4_LEAN_VERSION != steps.existing.outputs.version }}
       - name: Commit the changes
         uses: stefanzweifel/git-auto-commit-action@v5
