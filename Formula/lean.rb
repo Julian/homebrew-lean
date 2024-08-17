@@ -1,15 +1,14 @@
 class Lean < Formula
   desc "Theorem Prover"
   homepage "https://leanprover.github.io/"
-  url "https://github.com/leanprover/lean4/archive/refs/tags/v4.11.0-rc1.tar.gz"
-  sha256 "6d8608d218de24986ffc223612e74147830cd20c21a138250b2378f6eddb8a4f"
+  url "https://github.com/leanprover/lean4/archive/refs/tags/v4.11.0-rc2.tar.gz"
+  sha256 "8abb58cb02f15eda61e10acdb26aaa0f865a00eb85bfb379c118c422f503ea46"
   license "Apache-2.0"
   head "https://github.com/leanprover/lean4.git"
 
   depends_on "cmake" => :build
-  depends_on "coreutils"
   depends_on "gmp"
-  depends_on "jemalloc"
+  depends_on "libuv"
   depends_on macos: :mojave
 
   conflicts_with "elan-init", because: "`lean` and `elan-init` install the same binaries"
