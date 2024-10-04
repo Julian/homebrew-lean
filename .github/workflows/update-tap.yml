@@ -28,10 +28,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Parse the version
         run: |
-          echo MATHLIB4_LEAN_VERSION=$(printf '${{ steps.mathlib4_lean_version.outputs.data }}' | cut -d':' -f2) >>$GITHUB_ENV
+          echo MATHLIB4_LEAN_VERSION=$(printf '${{ steps.mathlib4_lean_version.outputs.data }}' | cut -d':' -f2 | tr -d 'v') >>$GITHUB_ENV
       - name: Update the Lean formula
         run: |
-          brew bump-formula-pr --no-audit --write-only julian/lean/lean --url "https://github.com/leanprover/lean4/archive/refs/tags/${MATHLIB4_LEAN_VERSION}.tar.gz"
+          brew bump-formula-pr --no-audit --write-only julian/lean/lean --version "${MATHLIB4_LEAN_VERSION}"
         if: ${{ env.MATHLIB4_LEAN_VERSION != steps.existing.outputs.version }}
         # brew bump-formula-pr appears to have no way to use cwd,
         # and pushing from the tap repo appears not to work, hooray...
