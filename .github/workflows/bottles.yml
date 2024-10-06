@@ -26,4 +26,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build bottles
-        run: brew install --build-bottle --head ./Formula/mathlib.rb
+        run: |
+          brew install --build-bottle ./Formula/lean.rb
+          brew bottle lean --merge --write --root-url=https://github.com/${{ github.repository }}/releases/download/${{ github.sha }}
+
+      - name: Upload bottle as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bottles
+          path: "*.bottle.*"
