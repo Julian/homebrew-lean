@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Parse the version
         run: |
-          echo MATHLIB4_LEAN_VERSION=$(printf '${{ steps.mathlib4_lean_version.outputs.data }}' | cut -d':' -f2 | tr -d 'v') >>$GITHUB_ENV
+          echo MATHLIB4_LEAN_VERSION=$(printf '${{ steps.mathlib4_lean_version.outputs.data }}' | cut -d':' -f2 | tr -d 'v' | tr -d ' ' | tr -d '\n') >>$GITHUB_ENV
       - name: Update the Lean formula
         run: |
           brew bump-formula-pr --no-audit --write-only julian/lean/lean --version "${MATHLIB4_LEAN_VERSION}"
