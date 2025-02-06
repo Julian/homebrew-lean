@@ -17,7 +17,7 @@ jobs:
       - name: Get the existing Lean formula version
         id: existing
         run: |
-          printf 'version=v%s\n' "$(brew info --json julian/lean/lean | jq -r '.[0].versions.stable')" >>"$GITHUB_OUTPUT"
+          printf 'version=%s\n' "$(brew info --json julian/lean/lean | jq -r '.[0].versions.stable')" >>"$GITHUB_OUTPUT"
       - uses: octokit/request-action@v2.x
         id: mathlib4_lean_version
         with:
